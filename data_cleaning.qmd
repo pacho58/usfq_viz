@@ -1,2 +1,92 @@
+
+---
+title: "Data Cleaning"
+format: html
+---
+
+# Carga de Librerias
 ```{python}
+import pandas as pd
+import matplotlib as plt
+```
+
+
+# Cargar de Dataset
+```{python}
+df = pd.read_csv('train.csv', index_col='time', parse_dates=True)
+df.head()
+```
+
+
+
+# Exploracion inicial
+## Informacion general del dataset
+
+```{python}
+df.info()
+```
+
+
+Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variables 43 variables numericas tipo float.
+
+## Informacion estadistica del dataset
+
+```{python}
+df.describe()
+```
+
+## Columnas con valores negativos
+
+```{python}
+columnas_negativas = [col for col in df.select_dtypes(include='number').columns 
+                      if (df[col] < 0).any()]
+
+print(f"Columnas con valores negativos: {columnas_negativas}")
+```
+
+El dataset muestra valores negativos en variables cuyo valor natural es un numero real positivo.
+
+## Columnas con valores faltantes
+
+```{python}
+cols_faltantes = df.columns[df.isnull().any()].tolist()
+print(f"Columnas con faltantes: {cols_faltantes}")
+```
+
+## Columnas con valores duplicados
+```{python}
+num_duplicados = df.duplicated().sum()
+print(f"Filas duplicadas: {num_duplicados}")
+```
+
+# Manejo de Valores - Consistencia
+## Tratamientovalores negativos
+```{python}
+df['wind_production'] = df['wind_production'].clip(lower=0)
+```
+
+
+# Transformacion/Creacion de Variables
+```{python}
+df['total_production'] = df['wind_production'] + df['pv_production']
+print(df[['pv_production', 'wind_production', 'total_production']].head())
+```
+
+# Seleccion de Caracteristicas
+
+## Carateristicas significativas
+```{python}
+correlacion = df.corr(numeric_only=True)
+correlacion['total_production'].sort_values(ascending=False)
+```
+
+## Eliminacion de caracteristicas redundantes
+
+```{python}
+cols_eliminar = ['consumption', 'spot_market_price', 'precip_1h:mm', 'precip_type:idx', 
+                 'clear_sky_energy_1h:J', 'diffuse_rad_1h:Wh', 'direct_rad_1h:Wh', 
+                 'global_rad_1h:Wh', 'total_cloud_cover:p']
+
+df_clean = df.drop(columns=cols_eliminar)
+df_clean.info()
 ```
