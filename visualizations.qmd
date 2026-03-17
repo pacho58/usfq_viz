@@ -1,0 +1,56 @@
+---
+title: "FLUCTUACION ESTACIONAL EN LA PRODUCCION DE ENERGIA RENOVABLE"
+Author: "Edwin Acosta, Kevin Lopez"
+format: html
+---
+
+
+
+# Carga de librerias
+```{python}
+import pandas as pd
+```
+
+# Dataset para visualizaciones
+```{python}
+df_visual = pd.read_csv('df_clean.csv', index_col='time', parse_dates=True)
+```
+
+# Informacion del dataset
+```{python}
+df_visual.info()
+```
+
+# Visualizacion 
+
+```{python}
+
+import altair as alt
+import pandas as pd
+
+# Preparar datos con agregación mensual (usa 'ME' en lugar de 'M')
+df_plot = df_visual.reset_index()
+df_monthly = df_plot.resample('ME', on='time')[['pv_production', 'wind_production', 'total_production']].mean().reset_index()
+
+# Gráfico con datos agregados
+chart = alt.Chart(df_monthly).transform_fold(
+    ['pv_production', 'wind_production', 'total_production'],
+    as_=['Fuente', 'Producción']
+).mark_line(point=True, opacity=0.8).encode(
+    x=alt.X('time:T', title='Mes', axis=alt.Axis(format='%Y-%m', labelAngle=-45)),
+    y=alt.Y('Producción:Q', title='Producción Promedio (MW)'),
+    color=alt.Color('Fuente:N',
+                    scale=alt.Scale(domain=['pv_production', 'wind_production', 'total_production'],
+                                   range=['#F4A261', '#2A9D8F', '#E76F51'])),
+    tooltip=['time:T', 'Fuente:N', alt.Tooltip('Producción:Q', format='.2f')]
+).properties(
+    width=900,
+    height=450,
+    title='Patrón Estacional Mensual: Producción Renovable'
+).interactive()
+
+chart
+
+chart
+
+```
