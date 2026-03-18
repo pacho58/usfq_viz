@@ -1,9 +1,9 @@
 ---
-title: "FLUCTUACION ESTACIONAL EN LA PRODUCCION DE ENERGIA RENOVABLE"
+title: "ANALISIS Y VISUALIZACIONES"
 Author: "Edwin Acosta, Kevin Lopez"
 format: html
 ---
-
+Este documento presenta el analisis principal de las preguntas planteadas mediante visualizaciones interactivas.
 
 
 # Carga de librerias
@@ -12,45 +12,209 @@ import pandas as pd
 ```
 
 # Dataset para visualizaciones
+Se utiliza el dataset procesado en en documento de limpieza y preparacion de datos.
 ```{python}
 df_visual = pd.read_csv('df_clean.csv', index_col='time', parse_dates=True)
 ```
 
-# Informacion del dataset
+# Pregunta analitica principal
+¿Cuál es la fluctuación estacional de pv_production, wind_production y su suma combinada?
+Se plantea utilizar energia eolica y solar para la generacion de energia electrica limpia. Estas dos fuentes de generacion se caracterizan por la fluctuacion de la intensidad de generacion con el tiempo. Conocer los rangos de estas fluctuaciones es esencial para la planificacion de la distribucion y para su acoplamiento en la red.
+La visualizacion de las fluctuaciones se las realiza sobre una base mensual/estacional utilizando una grafica de lineas multi serie para resaltar la evolucion temporal y los patrones estacionales. 
+
+# Visualizacion estacional- grafica de lineas multi series
+
 ```{python}
-df_visual.info()
+import altair as alt
+import pandas as pd
+
+# Preparar datos con agregación mensual
+df_plot = df_visual.reset_index()
+df_monthly = df_plot.resample('ME', on='time')[['pv_production', 'wind_production', 'total_production']].mean().reset_index()
+
+# Crear dataframe con límites de estaciones (Hemisferio Norte)
+# Invierno: Dic-Feb | Primavera: Mar-May | Verano: Jun-Ago | Otoño: Sep-Nov
+seasons_boundaries = pd.DataFrame({
+    'date': pd.to_datetime([
+        '2020-03-01',  # Inicio Primavera
+        '2020-06-01',  # Inicio Verano
+        '2020-09-01',  # Inicio Otoño
+        '2020-12-01',  # Inicio Invierno
+        '2021-03-01',  # Inicio Primavera (año 2)
+    ]),
+    'estacion': ['Primavera', 'Verano', 'Otoño', 'Invierno', 'Primavera']
+})
+
+# Gráfico de líneas principal
+line_chart = alt.Chart(df_monthly).transform_fold(
+    ['pv_production', 'wind_production', 'total_production'],
+    as_=['Fuente', 'Producción']
+).mark_line(point=True, opacity=0.8, strokeWidth=2).encode(
+    x=alt.X('time:T', title='Mes', axis=alt.Axis(format='%Y-%m', labelAngle=-45)),
+    y=alt.Y('Producción:Q', title='Producción Promedio (MW)'),
+    color=alt.Color('Fuente:N',
+                    scale=alt.Scale(domain=['pv_production', 'wind_production', 'total_production'],
+                                   range=['#F4A261', '#2A9D8F', '#E76F51']),
+                    legend=alt.Legend(title='Fuente de Energía')),
+    tooltip=['time:T', 'Fuente:N', alt.Tooltip('Producción:Q', format='.2f')]
+)
+
+# Líneas verticales para límites de estaciones
+season_lines = alt.Chart(seasons_boundaries).mark_rule(color='gray', strokeDash=[5, 5], opacity=0.6).encode(
+    x='date:T'
+)
+
+# Etiquetas de estaciones (opcional - en la parte superior del gráfico)
+season_labels = alt.Chart(seasons_boundaries).mark_text(
+    align='left',
+    baseline='bottom',
+    fontSize=10,
+    color='gray',
+    dy=-10
+).encode(
+    x='date:T',
+    y=alt.value(0),  # Posición fija en la parte superior
+    text='estacion:N'
+)
+
+# Combinar capas
+chart = alt.layer(line_chart, season_lines, season_labels).properties(
+    width=900,
+    height=450,
+    title='Patrón Estacional Mensual: Producción Renovable (Hemisferio Norte)'
+).interactive()
+
+chart
+
 ```
 
-# Visualizacion 
+# Interpretacion
 
+La gráfica revela patrones estacionales complementarios entre fuentes. La producción fotovoltaica maximiza en primavera-verano (abril-julio 2020: 15-20 MW) y minimiza en invierno (enero 2021: ~0 MW), siguiendo la disponibilidad solar. La producción eólica muestra mayor variabilidad, con picos en abril 2020 (~38 MW) y diciembre 2020 (~39 MW), y mínimos en septiembre 2020 (~8 MW) e enero 2021 (~6 MW). La producción total alcanza máximos en abril 2020 (~46 MW) y diciembre 2020 (~41 MW), evidenciando complementariedad estacional: cuando la solar disminuye (invierno), la eólica puede compensar parcialmente, optimizando el mix energético anual.
+
+
+# Pregunta analitica derivada
+¿Cual es la intensidad de producción por estación y hora?
+La fluctuacion intrinsica de las dos fuentes de generacion dan lugar al aparecimiento de valores optimos en ciertas horas del dia durante ciertas estaciones del anio dependiendo de las condiciones atmosfericas.La intensidad de generacion de las fuentes eolica y solar y de la suma combinada de ellas se las puede apreciar de forma eficaz a traves de un mapa de calor interactivo mostrando informacion de la fuente de generacion, estacion del anio, hora del dia, y produccion.  
+
+# Visualizacion de generacion por estacion y hora - Heatmap
 ```{python}
 
 import altair as alt
 import pandas as pd
 
-# Preparar datos con agregación mensual (usa 'ME' en lugar de 'M')
+# =============================================================================
+# NIVEL 2: ABSTRACCIÓN DE DATOS (Munzner)
+# =============================================================================
+
+# Desactivar límite de filas de Altair
+alt.data_transformers.disable_max_rows()
+
+# Preparar datos
 df_plot = df_visual.reset_index()
-df_monthly = df_plot.resample('ME', on='time')[['pv_production', 'wind_production', 'total_production']].mean().reset_index()
+df_plot['hora'] = df_plot['time'].dt.hour
+df_plot['mes'] = df_plot['time'].dt.month
 
-# Gráfico con datos agregados
-chart = alt.Chart(df_monthly).transform_fold(
-    ['pv_production', 'wind_production', 'total_production'],
-    as_=['Fuente', 'Producción']
-).mark_line(point=True, opacity=0.8).encode(
-    x=alt.X('time:T', title='Mes', axis=alt.Axis(format='%Y-%m', labelAngle=-45)),
-    y=alt.Y('Producción:Q', title='Producción Promedio (MW)'),
-    color=alt.Color('Fuente:N',
-                    scale=alt.Scale(domain=['pv_production', 'wind_production', 'total_production'],
-                                   range=['#F4A261', '#2A9D8F', '#E76F51'])),
-    tooltip=['time:T', 'Fuente:N', alt.Tooltip('Producción:Q', format='.2f')]
+# Mapear meses a estaciones (Hemisferio Norte)
+df_plot['estacion'] = df_plot['mes'].map(
+    {1: 'Invierno', 2: 'Invierno', 3: 'Primavera', 4: 'Primavera', 5: 'Primavera',
+     6: 'Verano', 7: 'Verano', 8: 'Verano', 9: 'Otoño', 10: 'Otoño', 11: 'Otoño', 12: 'Invierno'}
+)
+
+# Agregar producción promedio por hora y estación
+df_heatmap = df_plot.groupby(['estacion', 'hora'])[['pv_production', 'wind_production', 'total_production']].mean().reset_index()
+
+# Transformar a formato largo
+df_long = df_heatmap.melt(
+    id_vars=['estacion', 'hora'], 
+    value_vars=['pv_production', 'wind_production', 'total_production'],
+    var_name='Fuente', 
+    value_name='Produccion_Promedio'
+)
+
+# Mapear nombres para mejor visualización
+nombres_fuentes = {
+    'pv_production': 'Fotovoltaica',
+    'wind_production': 'Eólica',
+    'total_production': 'Total Renovable'
+}
+df_long['Fuente_Nombre'] = df_long['Fuente'].map(nombres_fuentes)
+
+# =============================================================================
+# NIVEL 3: DISEÑO DE CODIFICACIÓN VISUAL (Munzner)
+# =============================================================================
+
+# Crear dropdown selection
+source_select = alt.selection_point(
+    name='Seleccionar Fuente',
+    fields=['Fuente_Nombre'],
+    bind=alt.binding_select(
+        options=['Fotovoltaica', 'Eólica', 'Total Renovable'],
+        name='Fuente: '
+    )
+)
+
+# Crear heatmap base CON FILTRO REAL DE DATOS
+heatmap = alt.Chart(df_long).mark_rect(stroke='white', strokeWidth=0.5).encode(
+    x=alt.X('hora:O', 
+            title='Hora del Día', 
+            axis=alt.Axis(values=list(range(0, 24, 2)), labelAngle=0)),
+    
+    y=alt.Y('estacion:N', 
+            title='Estación', 
+            sort=['Primavera', 'Verano', 'Otoño', 'Invierno']),
+    
+    # Color basado en la producción (escala se ajusta automáticamente)
+    color=alt.Color('Produccion_Promedio:Q', 
+                    scale=alt.Scale(scheme='blues'),
+                    title='Producción Promedio (MW)'),
+    
+    tooltip=[
+        alt.Tooltip('estacion:N', title='Estación'),
+        alt.Tooltip('hora:O', title='Hora'),
+        alt.Tooltip('Fuente_Nombre:N', title='Fuente'),
+        alt.Tooltip('Produccion_Promedio:Q', format='.2f', title='Producción (MW)')
+    ]
+).add_params(source_select).transform_filter(
+    source_select  # ← FILTRA LOS DATOS según la selección del dropdown
 ).properties(
-    width=900,
-    height=450,
-    title='Patrón Estacional Mensual: Producción Renovable'
-).interactive()
+    width=700,
+    height=300,
+    title='Heatmap Estacional: Seleccione una fuente en el dropdown'
+)
 
-chart
+# Texto informativo
+info_text = alt.Chart(pd.DataFrame({
+    'x': [0], 
+    'y': [0], 
+    'text': ['💡 Interpretación: Colores más intensos = Mayor producción | Use el dropdown para cambiar de fuente']
+})).mark_text(
+    align='left',
+    baseline='top',
+    fontSize=11,
+    color='gray'
+).encode(
+    x=alt.value(0),
+    y=alt.value(-25),
+    text='text:N'
+).properties(width=700)
+
+# Combinar capas
+chart = alt.vconcat(info_text, heatmap).configure_view(
+    stroke=None
+).configure_axis(
+    labelFontSize=10,
+    titleFontSize=12,
+    grid=False
+).configure_legend(
+    titleFontSize=12,
+    labelFontSize=10
+)
 
 chart
 
 ```
+# Interpretacion
+
+El heatmap revela que la intensidad de producción varía significativamente. Primavera presenta la mayor intensidad (azul oscuro), mientras que Verano muestra la menor. Las horas nocturnas y tempranas (0-6h, 20-22h) tienen producción mínima en todas las estaciones.
+Las ventanas óptimas de generación se concentran entre las 10:00 y 16:00 horas, donde los colores son más intensos. Específicamente, la media mañana en Primavera representa el pico máximo. Esto indica que la planificación energética debe priorizar la integración en red durante estas horas centrales del día para aprovechar al máximo la disponibilidad renovable cuando es más alta.
