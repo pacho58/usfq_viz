@@ -1,36 +1,43 @@
 ---
-title: "Visualizacion Hola Mundo"
-Author: "Edwin Acosta"
+title: "FLUCTUACION ESTACIONAL EN LA PRODUCCION DE ENERGIA RENOVABLE"
+Author: "Edwin Acosta, Kevin Lopez"
 format: html
 ---
+
+# Contexto del Proyecto
+La generacion de energia renovable proveniente del viento y sol tienen como caracteristica intrinsica la fluctuacion de su intensidad pudiendo llegar incluso a deternerse momentaneamente. Esta fluctuacion tiene implicaciones en la operacion y distribucion de la energia.
+
+
+# Motivacion del Analisis
+1.- Comprender como varia la produccion de energia renovable a lo largo del anio para apoyar la planificacion energetica y su integracion en la red.
+
+2.- Identificar complementariedades entre fuentes eolica y solar para optimizar el mix energetico.
+
+
+# Pregunta Analitica Principal
+Cual es la fluctuacion de pv_production, wind production y su suma combinada?
+
+En que meses se maximiza/minimiza cada fuente?
+
+Existe complementariedad estacional entre las fuentes eolica y solar?
+
+Como se relacionan las variables meteorologicas con los patrones de produccion?
+
+
 # Dataset
-Vamos a utilizar el dataset de carros de vega_datasets https://vega.github.io/vega-datasets/
+Para este estudio se utiliza un dataset real de una planta en Dinamarca con las siguientes caracteristicas:
 
-```{python}
-import altair as alt
-from vega_datasets import data
-```
-# Autos
+1.- Es un dataset de series temporales de produccion energetica y variables meteorologicas (formato horario)
 
+2.- Dataset con 9515 observaciones desde 01/01/2020 hasta 31/01/2021.
 
+3.- pv_production, wind_production, pv + wind
 
-```{python}
-cars = data.cars()
-cars.head()
-```
-# Visualizacion de tipo: Grafico de dispersion
-El grafico de la @fig-millas-weight muestra la correlacion entre las millas por galon vs el peso en libras
+4.- Variables predictoras: radiacion solar, nubosidad, temperatura, humedad, precipitacion, velocidad de viento a multiples alturas.
 
-```{python}
-#| label: fig-millas-weight
-#| fig-cap: "Correlacion de Millas porgalon vs peso enlibras"
-#| code-fold: false
-alt.Chart(cars, title="Viz 1").mark_point().encode(
-    alt.X('Miles_per_Gallon'),
-    alt.Y('Weight_in_lbs'),
-    tooltip=[
-        'Miles_per_Gallon',
-        'Weight_in_lbs'
-    ]
-).interactive()
-```
+5.- Tipos de datos: serie temporal con indice DatetimeIndex; 43 variables numericas continuas
+
+# Enlace Seccion Limpieza de Datos 
+
+# Enlace Seccion Visualizaciones
+
