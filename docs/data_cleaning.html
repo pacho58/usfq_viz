@@ -104,10 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
 
 </head>
@@ -132,6 +129,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#informacion-estadistica-del-dataset" id="toc-informacion-estadistica-del-dataset" class="nav-link" data-scroll-target="#informacion-estadistica-del-dataset">Informacion estadistica del dataset</a></li>
   <li><a href="#columnas-con-valores-negativos" id="toc-columnas-con-valores-negativos" class="nav-link" data-scroll-target="#columnas-con-valores-negativos">Columnas con valores negativos</a></li>
   <li><a href="#columnas-con-valores-faltantes" id="toc-columnas-con-valores-faltantes" class="nav-link" data-scroll-target="#columnas-con-valores-faltantes">Columnas con valores faltantes</a></li>
+  <li><a href="#columnas-con-valores-duplicados" id="toc-columnas-con-valores-duplicados" class="nav-link" data-scroll-target="#columnas-con-valores-duplicados">Columnas con valores duplicados</a></li>
+  </ul></li>
+  <li><a href="#manejo-de-valores---consistencia" id="toc-manejo-de-valores---consistencia" class="nav-link" data-scroll-target="#manejo-de-valores---consistencia">Manejo de Valores - Consistencia</a>
+  <ul class="collapse">
+  <li><a href="#tratamientovalores-negativos" id="toc-tratamientovalores-negativos" class="nav-link" data-scroll-target="#tratamientovalores-negativos">Tratamientovalores negativos</a></li>
+  </ul></li>
+  <li><a href="#transformacioncreacion-de-variables" id="toc-transformacioncreacion-de-variables" class="nav-link" data-scroll-target="#transformacioncreacion-de-variables">Transformacion/Creacion de Variables</a></li>
+  <li><a href="#seleccion-de-caracteristicas" id="toc-seleccion-de-caracteristicas" class="nav-link" data-scroll-target="#seleccion-de-caracteristicas">Seleccion de Caracteristicas</a>
+  <ul class="collapse">
+  <li><a href="#carateristicas-significativas" id="toc-carateristicas-significativas" class="nav-link" data-scroll-target="#carateristicas-significativas">Carateristicas significativas</a></li>
+  <li><a href="#eliminacion-de-caracteristicas-redundantes" id="toc-eliminacion-de-caracteristicas-redundantes" class="nav-link" data-scroll-target="#eliminacion-de-caracteristicas-redundantes">Eliminacion de caracteristicas redundantes</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -160,19 +168,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="carga-de-librerias" class="level1">
 <h1>Carga de Librerias</h1>
-<div id="af6bd2eb" class="cell" data-execution_count="1">
+<div id="8148d955" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="cargar-de-dataset" class="level1">
 <h1>Cargar de Dataset</h1>
-<div id="0e98c3d2" class="cell" data-execution_count="2">
+<div id="f38c7db3" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"train.csv"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'train.csv'</span>, index_col<span class="op">=</span><span class="st">'time'</span>, parse_dates<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="2">
@@ -183,7 +192,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">time</th>
 <th data-quarto-table-cell-role="th">pv_production</th>
 <th data-quarto-table-cell-role="th">wind_production</th>
 <th data-quarto-table-cell-role="th">consumption</th>
@@ -193,6 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">prob_precip_1h:p</th>
 <th data-quarto-table-cell-role="th">clear_sky_rad:W</th>
 <th data-quarto-table-cell-role="th">clear_sky_energy_1h:J</th>
+<th data-quarto-table-cell-role="th">diffuse_rad:W</th>
 <th data-quarto-table-cell-role="th">...</th>
 <th data-quarto-table-cell-role="th">t_50m:C</th>
 <th data-quarto-table-cell-role="th">relative_humidity_50m:p</th>
@@ -205,11 +214,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">wind_speed_100m:ms</th>
 <th data-quarto-table-cell-role="th">wind_dir_100m:d</th>
 </tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">time</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
 </thead>
 <tbody>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>2020-01-01 13:00:00</td>
+<th data-quarto-table-cell-role="th">2020-01-01 13:00:00</th>
 <td>0.0</td>
 <td>40.59</td>
 <td>26.514689</td>
@@ -219,6 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1.0</td>
 <td>10.0</td>
 <td>64826.0</td>
+<td>7.4</td>
 <td>...</td>
 <td>8.4</td>
 <td>60.7</td>
@@ -232,8 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>247.3</td>
 </tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>2020-01-01 14:00:00</td>
+<th data-quarto-table-cell-role="th">2020-01-01 14:00:00</th>
 <td>0.0</td>
 <td>67.86</td>
 <td>28.326960</td>
@@ -243,6 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1.0</td>
 <td>0.0</td>
 <td>8961.1</td>
+<td>0.0</td>
 <td>...</td>
 <td>8.4</td>
 <td>61.6</td>
@@ -256,8 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>252.1</td>
 </tr>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>2020-01-01 15:00:00</td>
+<th data-quarto-table-cell-role="th">2020-01-01 15:00:00</th>
 <td>0.0</td>
 <td>116.68</td>
 <td>23.682207</td>
@@ -265,6 +297,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.0</td>
 <td>0.0</td>
 <td>1.0</td>
+<td>0.0</td>
 <td>0.0</td>
 <td>0.0</td>
 <td>...</td>
@@ -280,8 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>253.8</td>
 </tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>2020-01-01 16:00:00</td>
+<th data-quarto-table-cell-role="th">2020-01-01 16:00:00</th>
 <td>0.0</td>
 <td>120.22</td>
 <td>25.354782</td>
@@ -289,6 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.0</td>
 <td>0.0</td>
 <td>1.0</td>
+<td>0.0</td>
 <td>0.0</td>
 <td>0.0</td>
 <td>...</td>
@@ -304,8 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>254.2</td>
 </tr>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>2020-01-01 17:00:00</td>
+<th data-quarto-table-cell-role="th">2020-01-01 17:00:00</th>
 <td>0.0</td>
 <td>109.86</td>
 <td>23.861942</td>
@@ -313,6 +345,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.0</td>
 <td>0.0</td>
 <td>1.0</td>
+<td>0.0</td>
 <td>0.0</td>
 <td>0.0</td>
 <td>...</td>
@@ -330,7 +363,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 
-<p>5 rows × 44 columns</p>
+<p>5 rows × 43 columns</p>
 </div>
 </div>
 </div>
@@ -339,62 +372,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Exploracion inicial</h1>
 <section id="informacion-general-del-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="informacion-general-del-dataset">Informacion general del dataset</h2>
-<div id="ea131ba7" class="cell" data-execution_count="3">
+<div id="ec2e51f9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.DataFrame'&gt;
-RangeIndex: 9515 entries, 0 to 9514
-Data columns (total 44 columns):
+DatetimeIndex: 9515 entries, 2020-01-01 13:00:00 to 2021-01-31 23:00:00
+Data columns (total 43 columns):
  #   Column                    Non-Null Count  Dtype  
 ---  ------                    --------------  -----  
- 0   time                      9515 non-null   str    
- 1   pv_production             9515 non-null   float64
- 2   wind_production           9515 non-null   float64
- 3   consumption               9515 non-null   float64
- 4   spot_market_price         9515 non-null   float64
- 5   precip_1h:mm              9515 non-null   float64
- 6   precip_type:idx           9515 non-null   float64
- 7   prob_precip_1h:p          9515 non-null   float64
- 8   clear_sky_rad:W           9515 non-null   float64
- 9   clear_sky_energy_1h:J     9515 non-null   float64
- 10  diffuse_rad:W             9515 non-null   float64
- 11  diffuse_rad_1h:Wh         9515 non-null   float64
- 12  direct_rad:W              9515 non-null   float64
- 13  direct_rad_1h:Wh          9515 non-null   float64
- 14  global_rad:W              9515 non-null   float64
- 15  global_rad_1h:Wh          9515 non-null   float64
- 16  sunshine_duration_1h:min  9515 non-null   float64
- 17  sun_azimuth:d             9515 non-null   float64
- 18  sun_elevation:d           9515 non-null   float64
- 19  low_cloud_cover:p         9515 non-null   float64
- 20  medium_cloud_cover:p      9515 non-null   float64
- 21  high_cloud_cover:p        9515 non-null   float64
- 22  total_cloud_cover:p       9515 non-null   float64
- 23  effective_cloud_cover:p   9515 non-null   float64
- 24  temp                      9515 non-null   float64
- 25  relative_humidity_2m:p    9515 non-null   float64
- 26  dew_point_2m:C            9515 non-null   float64
- 27  wind_speed_2m:ms          9515 non-null   float64
- 28  wind_dir_2m:d             9515 non-null   float64
- 29  t_10m:C                   9515 non-null   float64
- 30  relative_humidity_10m:p   9515 non-null   float64
- 31  dew_point_10m:C           9515 non-null   float64
- 32  wind_speed_10m:ms         9515 non-null   float64
- 33  wind_dir_10m:d            9515 non-null   float64
- 34  t_50m:C                   9515 non-null   float64
- 35  relative_humidity_50m:p   9515 non-null   float64
- 36  dew_point_50m:C           9515 non-null   float64
- 37  wind_speed_50m:ms         9515 non-null   float64
- 38  wind_dir_50m:d            9515 non-null   float64
- 39  t_100m:C                  9515 non-null   float64
- 40  relative_humidity_100m:p  9515 non-null   float64
- 41  dew_point_100m:C          9515 non-null   float64
- 42  wind_speed_100m:ms        9515 non-null   float64
- 43  wind_dir_100m:d           9515 non-null   float64
-dtypes: float64(43), str(1)
+ 0   pv_production             9515 non-null   float64
+ 1   wind_production           9515 non-null   float64
+ 2   consumption               9515 non-null   float64
+ 3   spot_market_price         9515 non-null   float64
+ 4   precip_1h:mm              9515 non-null   float64
+ 5   precip_type:idx           9515 non-null   float64
+ 6   prob_precip_1h:p          9515 non-null   float64
+ 7   clear_sky_rad:W           9515 non-null   float64
+ 8   clear_sky_energy_1h:J     9515 non-null   float64
+ 9   diffuse_rad:W             9515 non-null   float64
+ 10  diffuse_rad_1h:Wh         9515 non-null   float64
+ 11  direct_rad:W              9515 non-null   float64
+ 12  direct_rad_1h:Wh          9515 non-null   float64
+ 13  global_rad:W              9515 non-null   float64
+ 14  global_rad_1h:Wh          9515 non-null   float64
+ 15  sunshine_duration_1h:min  9515 non-null   float64
+ 16  sun_azimuth:d             9515 non-null   float64
+ 17  sun_elevation:d           9515 non-null   float64
+ 18  low_cloud_cover:p         9515 non-null   float64
+ 19  medium_cloud_cover:p      9515 non-null   float64
+ 20  high_cloud_cover:p        9515 non-null   float64
+ 21  total_cloud_cover:p       9515 non-null   float64
+ 22  effective_cloud_cover:p   9515 non-null   float64
+ 23  temp                      9515 non-null   float64
+ 24  relative_humidity_2m:p    9515 non-null   float64
+ 25  dew_point_2m:C            9515 non-null   float64
+ 26  wind_speed_2m:ms          9515 non-null   float64
+ 27  wind_dir_2m:d             9515 non-null   float64
+ 28  t_10m:C                   9515 non-null   float64
+ 29  relative_humidity_10m:p   9515 non-null   float64
+ 30  dew_point_10m:C           9515 non-null   float64
+ 31  wind_speed_10m:ms         9515 non-null   float64
+ 32  wind_dir_10m:d            9515 non-null   float64
+ 33  t_50m:C                   9515 non-null   float64
+ 34  relative_humidity_50m:p   9515 non-null   float64
+ 35  dew_point_50m:C           9515 non-null   float64
+ 36  wind_speed_50m:ms         9515 non-null   float64
+ 37  wind_dir_50m:d            9515 non-null   float64
+ 38  t_100m:C                  9515 non-null   float64
+ 39  relative_humidity_100m:p  9515 non-null   float64
+ 40  dew_point_100m:C          9515 non-null   float64
+ 41  wind_speed_100m:ms        9515 non-null   float64
+ 42  wind_dir_100m:d           9515 non-null   float64
+dtypes: float64(43)
 memory usage: 3.2 MB</code></pre>
 </div>
 </div>
@@ -402,7 +434,7 @@ memory usage: 3.2 MB</code></pre>
 </section>
 <section id="informacion-estadistica-del-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="informacion-estadistica-del-dataset">Informacion estadistica del dataset</h2>
-<div id="2c607835" class="cell" data-execution_count="4">
+<div id="e690c885" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -641,7 +673,7 @@ memory usage: 3.2 MB</code></pre>
 </section>
 <section id="columnas-con-valores-negativos" class="level2">
 <h2 class="anchored" data-anchor-id="columnas-con-valores-negativos">Columnas con valores negativos</h2>
-<div id="05d6ed1a" class="cell" data-execution_count="5">
+<div id="5af7e098" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>columnas_negativas <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> df.select_dtypes(include<span class="op">=</span><span class="st">'number'</span>).columns </span>
@@ -657,7 +689,7 @@ memory usage: 3.2 MB</code></pre>
 </section>
 <section id="columnas-con-valores-faltantes" class="level2">
 <h2 class="anchored" data-anchor-id="columnas-con-valores-faltantes">Columnas con valores faltantes</h2>
-<div id="0c59db75" class="cell" data-execution_count="6">
+<div id="1e0036a4" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cols_faltantes <span class="op">=</span> df.columns[df.isnull().<span class="bu">any</span>()].tolist()</span>
@@ -665,6 +697,168 @@ memory usage: 3.2 MB</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Columnas con faltantes: []</code></pre>
+</div>
+</div>
+</section>
+<section id="columnas-con-valores-duplicados" class="level2">
+<h2 class="anchored" data-anchor-id="columnas-con-valores-duplicados">Columnas con valores duplicados</h2>
+<div id="6748d823" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>num_duplicados <span class="op">=</span> df.duplicated().<span class="bu">sum</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Filas duplicadas: </span><span class="sc">{</span>num_duplicados<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Filas duplicadas: 0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="manejo-de-valores---consistencia" class="level1">
+<h1>Manejo de Valores - Consistencia</h1>
+<section id="tratamientovalores-negativos" class="level2">
+<h2 class="anchored" data-anchor-id="tratamientovalores-negativos">Tratamientovalores negativos</h2>
+<div id="eedcf46a" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'wind_production'</span>] <span class="op">=</span> df[<span class="st">'wind_production'</span>].clip(lower<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+</section>
+<section id="transformacioncreacion-de-variables" class="level1">
+<h1>Transformacion/Creacion de Variables</h1>
+<div id="11fdb69e" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'total_production'</span>] <span class="op">=</span> df[<span class="st">'wind_production'</span>] <span class="op">+</span> df[<span class="st">'pv_production'</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df[[<span class="st">'pv_production'</span>, <span class="st">'wind_production'</span>, <span class="st">'total_production'</span>]].head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     pv_production  wind_production  total_production
+time                                                                 
+2020-01-01 13:00:00            0.0            40.59             40.59
+2020-01-01 14:00:00            0.0            67.86             67.86
+2020-01-01 15:00:00            0.0           116.68            116.68
+2020-01-01 16:00:00            0.0           120.22            120.22
+2020-01-01 17:00:00            0.0           109.86            109.86</code></pre>
+</div>
+</div>
+</section>
+<section id="seleccion-de-caracteristicas" class="level1">
+<h1>Seleccion de Caracteristicas</h1>
+<section id="carateristicas-significativas" class="level2">
+<h2 class="anchored" data-anchor-id="carateristicas-significativas">Carateristicas significativas</h2>
+<div id="24c92865" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>correlacion <span class="op">=</span> df.corr(numeric_only<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>correlacion[<span class="st">'total_production'</span>].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>total_production            1.000000
+wind_production             0.919906
+wind_speed_10m:ms           0.504129
+wind_speed_2m:ms            0.503796
+wind_speed_50m:ms           0.502800
+wind_speed_100m:ms          0.490410
+pv_production               0.368047
+global_rad:W                0.293586
+global_rad_1h:Wh            0.290508
+direct_rad:W                0.281246
+direct_rad_1h:Wh            0.278874
+clear_sky_rad:W             0.265586
+clear_sky_energy_1h:J       0.263906
+diffuse_rad:W               0.232571
+diffuse_rad_1h:Wh           0.230707
+sun_elevation:d             0.212681
+sunshine_duration_1h:min    0.168608
+temp                        0.131744
+t_10m:C                     0.128009
+t_50m:C                     0.113573
+t_100m:C                    0.101401
+prob_precip_1h:p            0.085158
+precip_1h:mm                0.070739
+precip_type:idx             0.046247
+high_cloud_cover:p          0.044169
+medium_cloud_cover:p        0.037528
+total_cloud_cover:p         0.020797
+effective_cloud_cover:p     0.005467
+wind_dir_100m:d             0.003018
+wind_dir_2m:d               0.000343
+wind_dir_10m:d              0.000343
+wind_dir_50m:d             -0.000034
+consumption                -0.008180
+sun_azimuth:d              -0.009507
+dew_point_2m:C             -0.025138
+dew_point_10m:C            -0.029461
+dew_point_50m:C            -0.043033
+dew_point_100m:C           -0.049922
+low_cloud_cover:p          -0.073197
+spot_market_price          -0.115915
+relative_humidity_100m:p   -0.325722
+relative_humidity_50m:p    -0.356118
+relative_humidity_10m:p    -0.384185
+relative_humidity_2m:p     -0.389618
+Name: total_production, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="eliminacion-de-caracteristicas-redundantes" class="level2">
+<h2 class="anchored" data-anchor-id="eliminacion-de-caracteristicas-redundantes">Eliminacion de caracteristicas redundantes</h2>
+<div id="f9c05ba9" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cols_eliminar <span class="op">=</span> [<span class="st">'consumption'</span>, <span class="st">'spot_market_price'</span>, <span class="st">'precip_1h:mm'</span>, <span class="st">'precip_type:idx'</span>, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'clear_sky_energy_1h:J'</span>, <span class="st">'diffuse_rad_1h:Wh'</span>, <span class="st">'direct_rad_1h:Wh'</span>, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'global_rad_1h:Wh'</span>, <span class="st">'total_cloud_cover:p'</span>]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>df_clean <span class="op">=</span> df.drop(columns<span class="op">=</span>cols_eliminar)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>df_clean.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.DataFrame'&gt;
+DatetimeIndex: 9515 entries, 2020-01-01 13:00:00 to 2021-01-31 23:00:00
+Data columns (total 35 columns):
+ #   Column                    Non-Null Count  Dtype  
+---  ------                    --------------  -----  
+ 0   pv_production             9515 non-null   float64
+ 1   wind_production           9515 non-null   float64
+ 2   prob_precip_1h:p          9515 non-null   float64
+ 3   clear_sky_rad:W           9515 non-null   float64
+ 4   diffuse_rad:W             9515 non-null   float64
+ 5   direct_rad:W              9515 non-null   float64
+ 6   global_rad:W              9515 non-null   float64
+ 7   sunshine_duration_1h:min  9515 non-null   float64
+ 8   sun_azimuth:d             9515 non-null   float64
+ 9   sun_elevation:d           9515 non-null   float64
+ 10  low_cloud_cover:p         9515 non-null   float64
+ 11  medium_cloud_cover:p      9515 non-null   float64
+ 12  high_cloud_cover:p        9515 non-null   float64
+ 13  effective_cloud_cover:p   9515 non-null   float64
+ 14  temp                      9515 non-null   float64
+ 15  relative_humidity_2m:p    9515 non-null   float64
+ 16  dew_point_2m:C            9515 non-null   float64
+ 17  wind_speed_2m:ms          9515 non-null   float64
+ 18  wind_dir_2m:d             9515 non-null   float64
+ 19  t_10m:C                   9515 non-null   float64
+ 20  relative_humidity_10m:p   9515 non-null   float64
+ 21  dew_point_10m:C           9515 non-null   float64
+ 22  wind_speed_10m:ms         9515 non-null   float64
+ 23  wind_dir_10m:d            9515 non-null   float64
+ 24  t_50m:C                   9515 non-null   float64
+ 25  relative_humidity_50m:p   9515 non-null   float64
+ 26  dew_point_50m:C           9515 non-null   float64
+ 27  wind_speed_50m:ms         9515 non-null   float64
+ 28  wind_dir_50m:d            9515 non-null   float64
+ 29  t_100m:C                  9515 non-null   float64
+ 30  relative_humidity_100m:p  9515 non-null   float64
+ 31  dew_point_100m:C          9515 non-null   float64
+ 32  wind_speed_100m:ms        9515 non-null   float64
+ 33  wind_dir_100m:d           9515 non-null   float64
+ 34  total_production          9515 non-null   float64
+dtypes: float64(35)
+memory usage: 2.6 MB</code></pre>
 </div>
 </div>
 
