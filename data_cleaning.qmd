@@ -1,13 +1,15 @@
 
 ---
-title: "Data Cleaning"
+title: "DATA CLEANING"
 format: html
 ---
+
+En este documento se procede con el desarrollo del EDA alineado con el modelo de Munzner. Aqui se valida fundamentalmente la consistencia de las variables dsde el punto de vista fisico. Por ejemplo, que la generacion solar sea cero durante la noche y que la generacion eolica no tenga valores negativos fisicamente imposibles. Ademas se analiza la pertinencia de crear nuevas variables que permitan llegar a una visualizacion clara y legible de patrones temporales y estacionalidad.
 
 # Carga de Librerias
 ```{python}
 import pandas as pd
-import matplotlib as plt
+
 ```
 
 
@@ -27,7 +29,7 @@ df.info()
 ```
 
 
-Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variables 43 variables numericas tipo float.
+Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variables 43 variables numericas tipo float. Hay una columna tipo datetime que conviene usar como indice por su naturaleza temporal.
 
 ## Informacion estadistica del dataset
 
@@ -35,6 +37,7 @@ Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variab
 df.describe()
 ```
 
+Aqui se puede detectar la existencia de valores negativos en los valores de generacion eolica, lo cual es fisicamente inconsistente. 
 ## Columnas con valores negativos
 
 ```{python}
@@ -44,7 +47,7 @@ columnas_negativas = [col for col in df.select_dtypes(include='number').columns
 print(f"Columnas con valores negativos: {columnas_negativas}")
 ```
 
-El dataset muestra valores negativos en variables cuyo valor natural es un numero real positivo.
+El dataset muestra valores negativos en varias columnas. Se verifica una inconsistencia fisica con los valores de wind_production. 
 
 ## Columnas con valores faltantes
 
@@ -53,24 +56,31 @@ cols_faltantes = df.columns[df.isnull().any()].tolist()
 print(f"Columnas con faltantes: {cols_faltantes}")
 ```
 
+No se registra valores faltantes en el dataset en cuestion.
+
 ## Columnas con valores duplicados
 ```{python}
 num_duplicados = df.duplicated().sum()
 print(f"Filas duplicadas: {num_duplicados}")
 ```
 
+No se registra valores duplicados en el dataset en cuestion.
+
 # Manejo de Valores - Consistencia
-## Tratamientovalores negativos
+## Tratamiento valores negativos
 ```{python}
 df['wind_production'] = df['wind_production'].clip(lower=0)
 ```
 
+Los valores negativos de la variable wind_production se los convierte en cero. Se verifico que la mayoria de estos valores tienen un valor cercano a cero que no representan una desviacion significativa respecto de los valores reales.
 
 # Transformacion/Creacion de Variables
 ```{python}
 df['total_production'] = df['wind_production'] + df['pv_production']
 print(df[['pv_production', 'wind_production', 'total_production']].head())
 ```
+
+en esta seccion se procede con la creacion de una nueva variable "total_production" para tener la perspectiva combinada de las dos fuentes durante la visualizacion.
 
 # Seleccion de Caracteristicas
 
@@ -79,6 +89,8 @@ print(df[['pv_production', 'wind_production', 'total_production']].head())
 correlacion = df.corr(numeric_only=True)
 correlacion['total_production'].sort_values(ascending=False)
 ```
+
+Aqui se establece lascaracteristicas de mayor relevancia con respecto a la variable "total_production". Debido a que se esta manejando variables fisicas, es necesario seleccionar las caracteristicas con un criterio adicional de redundancia.
 
 ## Eliminacion de caracteristicas redundantes
 
@@ -90,3 +102,13 @@ cols_eliminar = ['consumption', 'spot_market_price', 'precip_1h:mm', 'precip_typ
 df_clean = df.drop(columns=cols_eliminar)
 df_clean.info()
 ```
+
+Aqui se eliminar variables secundarias que se derivan directamente de las variables objetivo. Finalmente se verifica que el dtaset original de 43 variables se reduce a 35 variables.
+
+# Dataset para Visualizaciones
+```{python}
+df_clean.reset_index().to_csv(r'C:\Users\Usuario\Desktop\Maestria Ciencia de Datos\Visualizacion de Datos\python_projects\2026USFQVIZ\df_clean.csv', index=False)
+```
+
+# Justificacion de las decisiones tomadas.
+Ademas del procedimiento general de un EDA tipico como el analisis granularidad, de completitud y duplicidad, este dataset requiere deuna ingenieria de variables que involucra el analisis de consistencia fisica, la creacion de una nuevas variables, reduccion de variables redundantes, analisis de variables significativas. La pregunta principal incluye el analisis de patrones temporales y estacionalidad de la generacion combinada entre generacion eolica y solar; este reequerimiento obliga a tener una variable que muestre la "total_production". El dataset tiene originalmente 43 variables, 8 de las cuales se detecto que son redundantes mediante criterios fisicos. El criterio de alta correlacion de variables se reafino al complementarlo con el criterio de redundancia para disminir el ruido en el dataset. Finalmente, el dataset resultante "df_clean" contiene lasvariables de importancia y consistentes para la generacion de visualizaciones en la siguiente fase del proyecto. 
