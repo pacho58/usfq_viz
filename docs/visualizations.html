@@ -160,7 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Este documento presenta el analisis principal de las preguntas planteadas mediante visualizaciones interactivas.</p>
 <section id="carga-de-librerias" class="level1">
 <h1>Carga de librerias</h1>
-<div id="532c2d2e" class="cell" data-execution_count="1">
+<div id="4368d84e" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -170,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="dataset-para-visualizaciones" class="level1">
 <h1>Dataset para visualizaciones</h1>
 <p>Se utiliza el dataset procesado en en documento de limpieza y preparacion de datos.</p>
-<div id="748ae4dd" class="cell" data-execution_count="2">
+<div id="4f9eb443" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_visual <span class="op">=</span> pd.read_csv(<span class="st">'df_clean.csv'</span>, index_col<span class="op">=</span><span class="st">'time'</span>, parse_dates<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -183,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visualizacion-estacional--grafica-de-lineas-multi-series" class="level1">
 <h1>Visualizacion estacional- grafica de lineas multi series</h1>
-<div id="623f3548" class="cell" data-execution_count="3">
+<div id="f53b7a84" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
@@ -250,23 +250,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="3">
 
 <style>
-  #altair-viz-f34470c7491d411a971698c8f894ef24.vega-embed {
+  #altair-viz-61d821db181041a5b1ec53a290d3359c.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-f34470c7491d411a971698c8f894ef24.vega-embed details,
-  #altair-viz-f34470c7491d411a971698c8f894ef24.vega-embed details summary {
+  #altair-viz-61d821db181041a5b1ec53a290d3359c.vega-embed details,
+  #altair-viz-61d821db181041a5b1ec53a290d3359c.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-f34470c7491d411a971698c8f894ef24"></div>
+<div id="altair-viz-61d821db181041a5b1ec53a290d3359c"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-f34470c7491d411a971698c8f894ef24") {
-      outputDiv = document.getElementById("altair-viz-f34470c7491d411a971698c8f894ef24");
+    if (outputDiv.id !== "altair-viz-61d821db181041a5b1ec53a290d3359c") {
+      outputDiv = document.getElementById("altair-viz-61d821db181041a5b1ec53a290d3359c");
     }
 
     const paths = {
@@ -329,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visualizacion-de-generacion-por-estacion-y-hora---heatmap" class="level1">
 <h1>Visualizacion de generacion por estacion y hora - Heatmap</h1>
-<div id="cc95f320" class="cell" data-execution_count="4">
+<div id="77c20524" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
@@ -448,23 +448,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="4">
 
 <style>
-  #altair-viz-d76558458b6c4d75b947761d325f0258.vega-embed {
+  #altair-viz-7a6cc65d45724ceba35a069714e8fcd6.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-d76558458b6c4d75b947761d325f0258.vega-embed details,
-  #altair-viz-d76558458b6c4d75b947761d325f0258.vega-embed details summary {
+  #altair-viz-7a6cc65d45724ceba35a069714e8fcd6.vega-embed details,
+  #altair-viz-7a6cc65d45724ceba35a069714e8fcd6.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-d76558458b6c4d75b947761d325f0258"></div>
+<div id="altair-viz-7a6cc65d45724ceba35a069714e8fcd6"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-d76558458b6c4d75b947761d325f0258") {
-      outputDiv = document.getElementById("altair-viz-d76558458b6c4d75b947761d325f0258");
+    if (outputDiv.id !== "altair-viz-7a6cc65d45724ceba35a069714e8fcd6") {
+      outputDiv = document.getElementById("altair-viz-7a6cc65d45724ceba35a069714e8fcd6");
     }
 
     const paths = {
@@ -519,6 +519,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretacion-1" class="level1">
 <h1>Interpretacion</h1>
+<p>El heatmap revela que la intensidad de producción varía significativamente. Primavera presenta la mayor intensidad (azul oscuro), mientras que Verano muestra la menor. Las horas nocturnas y tempranas (0-6h, 20-22h) tienen producción mínima en todas las estaciones. Las ventanas óptimas de generación se concentran entre las 10:00 y 16:00 horas, donde los colores son más intensos. Específicamente, la media mañana en Primavera representa el pico máximo. Esto indica que la planificación energética debe priorizar la integración en red durante estas horas centrales del día para aprovechar al máximo la disponibilidad renovable cuando es más alta.</p>
 
 
 </section>
