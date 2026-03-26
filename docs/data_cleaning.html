@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Cleaning</title>
+<title>DATA CLEANING</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -127,13 +127,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#informacion-general-del-dataset" id="toc-informacion-general-del-dataset" class="nav-link" data-scroll-target="#informacion-general-del-dataset">Informacion general del dataset</a></li>
   <li><a href="#informacion-estadistica-del-dataset" id="toc-informacion-estadistica-del-dataset" class="nav-link" data-scroll-target="#informacion-estadistica-del-dataset">Informacion estadistica del dataset</a></li>
-  <li><a href="#columnas-con-valores-negativos" id="toc-columnas-con-valores-negativos" class="nav-link" data-scroll-target="#columnas-con-valores-negativos">Columnas con valores negativos</a></li>
   <li><a href="#columnas-con-valores-faltantes" id="toc-columnas-con-valores-faltantes" class="nav-link" data-scroll-target="#columnas-con-valores-faltantes">Columnas con valores faltantes</a></li>
   <li><a href="#columnas-con-valores-duplicados" id="toc-columnas-con-valores-duplicados" class="nav-link" data-scroll-target="#columnas-con-valores-duplicados">Columnas con valores duplicados</a></li>
   </ul></li>
   <li><a href="#manejo-de-valores---consistencia" id="toc-manejo-de-valores---consistencia" class="nav-link" data-scroll-target="#manejo-de-valores---consistencia">Manejo de Valores - Consistencia</a>
   <ul class="collapse">
-  <li><a href="#tratamientovalores-negativos" id="toc-tratamientovalores-negativos" class="nav-link" data-scroll-target="#tratamientovalores-negativos">Tratamientovalores negativos</a></li>
+  <li><a href="#tratamiento-valores-negativos" id="toc-tratamiento-valores-negativos" class="nav-link" data-scroll-target="#tratamiento-valores-negativos">Tratamiento valores negativos</a></li>
   </ul></li>
   <li><a href="#transformacioncreacion-de-variables" id="toc-transformacioncreacion-de-variables" class="nav-link" data-scroll-target="#transformacioncreacion-de-variables">Transformacion/Creacion de Variables</a></li>
   <li><a href="#seleccion-de-caracteristicas" id="toc-seleccion-de-caracteristicas" class="nav-link" data-scroll-target="#seleccion-de-caracteristicas">Seleccion de Caracteristicas</a>
@@ -141,6 +140,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#carateristicas-significativas" id="toc-carateristicas-significativas" class="nav-link" data-scroll-target="#carateristicas-significativas">Carateristicas significativas</a></li>
   <li><a href="#eliminacion-de-caracteristicas-redundantes" id="toc-eliminacion-de-caracteristicas-redundantes" class="nav-link" data-scroll-target="#eliminacion-de-caracteristicas-redundantes">Eliminacion de caracteristicas redundantes</a></li>
   </ul></li>
+  <li><a href="#dataset-para-visualizaciones" id="toc-dataset-para-visualizaciones" class="nav-link" data-scroll-target="#dataset-para-visualizaciones">Dataset para Visualizaciones</a></li>
+  <li><a href="#justificacion-de-las-decisiones-tomadas." id="toc-justificacion-de-las-decisiones-tomadas." class="nav-link" data-scroll-target="#justificacion-de-las-decisiones-tomadas.">Justificacion de las decisiones tomadas.</a></li>
   </ul>
 </nav>
     </div>
@@ -149,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Cleaning</h1>
+<h1 class="title">DATA CLEANING</h1>
 </div>
 
 
@@ -166,19 +167,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>En este documento se procede con el desarrollo del EDA alineado con el modelo de Munzner. Aqui se valida fundamentalmente la consistencia de las variables dsde el punto de vista fisico. Por ejemplo, que la generacion solar sea cero durante la noche y que la generacion eolica no tenga valores negativos fisicamente imposibles. Ademas se analiza la pertinencia de crear nuevas variables que permitan llegar a una visualizacion clara y legible de patrones temporales y estacionalidad.</p>
 <section id="carga-de-librerias" class="level1">
 <h1>Carga de Librerias</h1>
-<div id="8148d955" class="cell" data-execution_count="1">
+<div id="1f1a77b5" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="cargar-de-dataset" class="level1">
 <h1>Cargar de Dataset</h1>
-<div id="f38c7db3" class="cell" data-execution_count="2">
+<div id="c433b2aa" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'train.csv'</span>, index_col<span class="op">=</span><span class="st">'time'</span>, parse_dates<span class="op">=</span><span class="va">True</span>)</span>
@@ -372,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Exploracion inicial</h1>
 <section id="informacion-general-del-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="informacion-general-del-dataset">Informacion general del dataset</h2>
-<div id="ec2e51f9" class="cell" data-execution_count="3">
+<div id="b3506a54" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -430,11 +431,11 @@ dtypes: float64(43)
 memory usage: 3.2 MB</code></pre>
 </div>
 </div>
-<p>Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variables 43 variables numericas tipo float.</p>
+<p>Se verifica que el dataset regsitra 9515 observaciones con un total de 43 variables 43 variables numericas tipo float. Hay una columna tipo datetime que conviene usar como indice por su naturaleza temporal.</p>
 </section>
 <section id="informacion-estadistica-del-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="informacion-estadistica-del-dataset">Informacion estadistica del dataset</h2>
-<div id="e690c885" class="cell" data-execution_count="4">
+<div id="d77f01df" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -670,10 +671,8 @@ memory usage: 3.2 MB</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="columnas-con-valores-negativos" class="level2">
-<h2 class="anchored" data-anchor-id="columnas-con-valores-negativos">Columnas con valores negativos</h2>
-<div id="5af7e098" class="cell" data-execution_count="5">
+<p>Aqui se puede detectar la existencia de valores negativos en los valores de generacion eolica, lo cual es fisicamente inconsistente. ## Columnas con valores negativos</p>
+<div id="61388ba0" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>columnas_negativas <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> df.select_dtypes(include<span class="op">=</span><span class="st">'number'</span>).columns </span>
@@ -685,11 +684,11 @@ memory usage: 3.2 MB</code></pre>
 <pre><code>Columnas con valores negativos: ['wind_production', 'sun_elevation:d', 'temp', 'dew_point_2m:C', 't_10m:C', 'dew_point_10m:C', 't_50m:C', 'dew_point_50m:C', 't_100m:C', 'dew_point_100m:C']</code></pre>
 </div>
 </div>
-<p>El dataset muestra valores negativos en variables cuyo valor natural es un numero real positivo.</p>
+<p>El dataset muestra valores negativos en varias columnas. Se verifica una inconsistencia fisica con los valores de wind_production.</p>
 </section>
 <section id="columnas-con-valores-faltantes" class="level2">
 <h2 class="anchored" data-anchor-id="columnas-con-valores-faltantes">Columnas con valores faltantes</h2>
-<div id="1e0036a4" class="cell" data-execution_count="6">
+<div id="18cf7d7b" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cols_faltantes <span class="op">=</span> df.columns[df.isnull().<span class="bu">any</span>()].tolist()</span>
@@ -699,10 +698,11 @@ memory usage: 3.2 MB</code></pre>
 <pre><code>Columnas con faltantes: []</code></pre>
 </div>
 </div>
+<p>No se registra valores faltantes en el dataset en cuestion.</p>
 </section>
 <section id="columnas-con-valores-duplicados" class="level2">
 <h2 class="anchored" data-anchor-id="columnas-con-valores-duplicados">Columnas con valores duplicados</h2>
-<div id="6748d823" class="cell" data-execution_count="7">
+<div id="655a6cb8" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>num_duplicados <span class="op">=</span> df.duplicated().<span class="bu">sum</span>()</span>
@@ -712,23 +712,25 @@ memory usage: 3.2 MB</code></pre>
 <pre><code>Filas duplicadas: 0</code></pre>
 </div>
 </div>
+<p>No se registra valores duplicados en el dataset en cuestion.</p>
 </section>
 </section>
 <section id="manejo-de-valores---consistencia" class="level1">
 <h1>Manejo de Valores - Consistencia</h1>
-<section id="tratamientovalores-negativos" class="level2">
-<h2 class="anchored" data-anchor-id="tratamientovalores-negativos">Tratamientovalores negativos</h2>
-<div id="eedcf46a" class="cell" data-execution_count="8">
+<section id="tratamiento-valores-negativos" class="level2">
+<h2 class="anchored" data-anchor-id="tratamiento-valores-negativos">Tratamiento valores negativos</h2>
+<div id="aa5feb46" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'wind_production'</span>] <span class="op">=</span> df[<span class="st">'wind_production'</span>].clip(lower<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+<p>Los valores negativos de la variable wind_production se los convierte en cero. Se verifico que la mayoria de estos valores tienen un valor cercano a cero que no representan una desviacion significativa respecto de los valores reales.</p>
 </section>
 </section>
 <section id="transformacioncreacion-de-variables" class="level1">
 <h1>Transformacion/Creacion de Variables</h1>
-<div id="11fdb69e" class="cell" data-execution_count="9">
+<div id="021e0a54" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'total_production'</span>] <span class="op">=</span> df[<span class="st">'wind_production'</span>] <span class="op">+</span> df[<span class="st">'pv_production'</span>]</span>
@@ -744,12 +746,13 @@ time
 2020-01-01 17:00:00            0.0           109.86            109.86</code></pre>
 </div>
 </div>
+<p>en esta seccion se procede con la creacion de una nueva variable “total_production” para tener la perspectiva combinada de las dos fuentes durante la visualizacion.</p>
 </section>
 <section id="seleccion-de-caracteristicas" class="level1">
 <h1>Seleccion de Caracteristicas</h1>
 <section id="carateristicas-significativas" class="level2">
 <h2 class="anchored" data-anchor-id="carateristicas-significativas">Carateristicas significativas</h2>
-<div id="24c92865" class="cell" data-execution_count="10">
+<div id="3e4565cf" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>correlacion <span class="op">=</span> df.corr(numeric_only<span class="op">=</span><span class="va">True</span>)</span>
@@ -803,10 +806,11 @@ relative_humidity_2m:p     -0.389618
 Name: total_production, dtype: float64</code></pre>
 </div>
 </div>
+<p>Aqui se establece lascaracteristicas de mayor relevancia con respecto a la variable “total_production”. Debido a que se esta manejando variables fisicas, es necesario seleccionar las caracteristicas con un criterio adicional de redundancia.</p>
 </section>
 <section id="eliminacion-de-caracteristicas-redundantes" class="level2">
 <h2 class="anchored" data-anchor-id="eliminacion-de-caracteristicas-redundantes">Eliminacion de caracteristicas redundantes</h2>
-<div id="f9c05ba9" class="cell" data-execution_count="11">
+<div id="5cdb3efc" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cols_eliminar <span class="op">=</span> [<span class="st">'consumption'</span>, <span class="st">'spot_market_price'</span>, <span class="st">'precip_1h:mm'</span>, <span class="st">'precip_type:idx'</span>, </span>
@@ -861,9 +865,23 @@ dtypes: float64(35)
 memory usage: 2.6 MB</code></pre>
 </div>
 </div>
-
-
+<p>Aqui se eliminar variables secundarias que se derivan directamente de las variables objetivo. Finalmente se verifica que el dtaset original de 43 variables se reduce a 35 variables.</p>
 </section>
+</section>
+<section id="dataset-para-visualizaciones" class="level1">
+<h1>Dataset para Visualizaciones</h1>
+<div id="db7856b1" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_clean.reset_index().to_csv(<span class="vs">r'C:</span><span class="er">\</span><span class="vs">Users</span><span class="er">\</span><span class="vs">Usuario</span><span class="dv">\D</span><span class="vs">esktop</span><span class="dv">\M</span><span class="vs">aestria Ciencia de Datos</span><span class="er">\</span><span class="vs">Visualizacion de Datos</span><span class="er">\</span><span class="vs">python_projects</span><span class="ch">\202</span><span class="vs">6USFQVIZ</span><span class="dv">\d</span><span class="vs">f_clean</span><span class="dv">.</span><span class="vs">csv'</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="justificacion-de-las-decisiones-tomadas." class="level1">
+<h1>Justificacion de las decisiones tomadas.</h1>
+<p>Ademas del procedimiento general de un EDA tipico como el analisis granularidad, de completitud y duplicidad, este dataset requiere deuna ingenieria de variables que involucra el analisis de consistencia fisica, la creacion de una nuevas variables, reduccion de variables redundantes, analisis de variables significativas. La pregunta principal incluye el analisis de patrones temporales y estacionalidad de la generacion combinada entre generacion eolica y solar; este reequerimiento obliga a tener una variable que muestre la “total_production”. El dataset tiene originalmente 43 variables, 8 de las cuales se detecto que son redundantes mediante criterios fisicos. El criterio de alta correlacion de variables se reafino al complementarlo con el criterio de redundancia para disminir el ruido en el dataset. Finalmente, el dataset resultante “df_clean” contiene lasvariables de importancia y consistentes para la generacion de visualizaciones en la siguiente fase del proyecto.</p>
+
+
 </section>
 
 </main> <!-- /main -->
